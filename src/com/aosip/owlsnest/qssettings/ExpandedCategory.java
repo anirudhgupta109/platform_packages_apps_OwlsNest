@@ -16,16 +16,26 @@
 
 package com.aosip.owlsnest.qssettings;
 
+import android.content.ContentResolver;
 import android.os.Bundle;
+import android.os.UserHandle;
 import android.support.v7.preference.Preference;
+import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference.OnPreferenceChangeListener;
 
 import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
 import com.android.settings.R;
 import com.android.settings.SettingsPreferenceFragment;
+import android.provider.Settings;
 
 public class ExpandedCategory extends SettingsPreferenceFragment implements
         Preference.OnPreferenceChangeListener {
+
+    private static final String PREF_TILE_ANIM_STYLE = "qs_tile_animation_style";
+    private static final String PREF_TILE_ANIM_DURATION = "qs_tile_animation_duration";
+
+    private ListPreference mTileAnimationStyle;
+    private ListPreference mTileAnimationDuration;
 
     @Override
     public int getMetricsCategory() {
@@ -36,6 +46,8 @@ public class ExpandedCategory extends SettingsPreferenceFragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.expanded);
+
+	ContentResolver resolver = getActivity().getContentResolver();
 
 	// QS animation
         mTileAnimationStyle = (ListPreference) findPreference(PREF_TILE_ANIM_STYLE);
@@ -62,6 +74,7 @@ public class ExpandedCategory extends SettingsPreferenceFragment implements
     }
 
     public boolean onPreferenceChange(Preference preference, Object newValue) {
+	ContentResolver resolver = getActivity().getContentResolver();
 	if (preference == mTileAnimationStyle) {
 		int tileAnimationStyle = Integer.valueOf((String) newValue);
 		Settings.System.putIntForUser(resolver, Settings.System.ANIM_TILE_STYLE,
@@ -100,3 +113,4 @@ public class ExpandedCategory extends SettingsPreferenceFragment implements
             }
 	}
     }
+}
